@@ -1,0 +1,18 @@
+<launch>
+    <!-- Parameters -->
+    <arg name="setup_file" default="euroc_mono_imu_frontend_rudpt.launch" />
+    <arg name="pose_topic" default="/svo/pose_imu" />
+    <arg name="output_file" default="$(find rudpt_svo)/results/test.txt" />
+    
+    <!-- Setup the svo environment with the given setup file -->
+    <include file="$(find rudpt_svo)/launch/$(arg setup_file)">
+        <arg name="rviz_on" value="false" />
+    </include>
+  
+    <!-- Initialise node for saving the svo poses -->
+    <node name="svo_to_txt" pkg="rudpt_svo" type="svo_pose_to_txt.py" output="screen" clear_params="true">
+       <param name="pose_topic" value="$(arg pose_topic)" type="str" /> 
+       <param name="output_file" value="$(arg output_file)" type="str" />
+    </node>
+
+</launch>
