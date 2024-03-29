@@ -49,7 +49,7 @@ for bag_file in "$input_directory"/*; do
     output_file="$output_directory/$(basename "$bag_file" .bag)/stamped_traj_estimate.txt"
     # Create the parent directory if it doesn't exist
     if [ ! -d "$(dirname "$output_file")" ]; then
-        # Directory doesn't exist, create it
+        echo "Creating directory $(dirname "$output_file")"
         mkdir -p "$(dirname "$output_file")"
     fi
     screen -d -m -S roslaunch_session bash -c "roslaunch rudpt_svo euroc_frontend_save_pose.launch output_file:=\"$output_file\""
@@ -77,4 +77,7 @@ for bag_file in "$input_directory"/*; do
 
     # Sleep to allow time for terminals to close before proceeding to the next iteration
     sleep 2
+
+    # Run the evaluation script
+    compare_results.sh "$(dirname "$output_file")"
 done
