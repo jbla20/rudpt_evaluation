@@ -5,6 +5,7 @@ cleanup() {
     # Send SIGINT to the screen sessions to close them gracefully
     screen -S rosbag_session -X stuff "^C"
     screen -S roslaunch_session -X stuff "^C"
+    screen -S traj_evaluation -X stuff "^C"
 }
 
 # Set up signal handler to call the cleanup function on SIGINT
@@ -22,6 +23,9 @@ is_process_running() {
     fi
 }
 
+# Set up logging
+# log_file="$(rospack find rudpt_svo)/logs/run_svo.log"
+# exec > >(tee -a "$log_file") 2>&1
 
 # Get the directory containing files
 input_directory="${1:-"/home/v-slam/svo_ws/test/rudpt"}"
@@ -55,29 +59,33 @@ for bag_file in "$input_directory"/*; do
     screen -d -m -S roslaunch_session bash -c "roslaunch rudpt_svo euroc_frontend_save_pose.launch output_file:=\"$output_file\""
 
     # Wait for some time to ensure the first command has started (adjust as needed)
-    sleep 15
+    sleep 10
     
     # Run ROS bag play in a separate terminal and capture PID
     echo "Playing ros bag file"
-    screen -d -m -S rosbag_session bash -c "rosbag play \"$bag_file\""
+    screen -d -m -S rosbag_session bash -c "rosbag play \"$bag_file\" -s 100" # Can add "-s 100" for debug
     rosbag_pid=$(screen -ls | grep rosbag_session | awk '{print $1}' | cut -d. -f1)
     # echo "PID of rosbag_pid is $rosbag_pid"
     
     # Check if the rosbag play process has finished
     time=0
-    while is_process_running $rosbag_pid; do
+    while is_process_running $rosbag_pid; do        
         sleep 1
         time=$((time + 1))
-        echo -ne "Ros bag playing: $time seconds.\r"
+        
+        # Get number of lines in the log file
+        echo -ne "Ros bag playing: "$time" seconds.\r"
     done
-    
+    # head -n -1 "$log_file" > tmp && mv tmp "$log_file"
+    # echo "Ros bag playing: $time seconds." >> "$log_file"
+
     # Kill the process running in the screen session by sending a SIGTERM signal
     echo -e "\nFinished processing file. Killing terminals."
     screen -S roslaunch_session -X stuff "^C"
 
     # Sleep to allow time for terminals to close before proceeding to the next iteration
     sleep 2
-
+    
     # Run the evaluation script
-    compare_results.sh "$(dirname "$output_file")"
+    screen -d -m -S traj_evaluation bash -c "./compare_results.sh \"$(dirname "$output_file")\""
 done
