@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # Get the directory for the evaluation
-evaluation_directory="${1:-"/home/v-slam/svo_ws/src/rudpt_svo/results/1,1_0_0"}"
+evaluation_directory="${1:-"/home/v-slam/vslam_ws/src/rudpt_evaluation/rudpt_orb_slam3/results/1,1_0_0"}"
 
 # Validate if directory exists
 if [ ! -d "$evaluation_directory" ]; then
