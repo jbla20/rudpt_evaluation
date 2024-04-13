@@ -1,0 +1,20 @@
+<launch>
+    <!-- Parameters -->
+    <arg name="setup_file" default="orb_slam3_euroc_mono_inertial.launch" />
+    <arg name="pose_topic" default="/orb_slam3/camera_pose" />
+    <arg name="output_file" default="$(find rudpt_evaluation)/results/test.txt" />
+    
+    <!-- Setup the svo environment with the given setup file -->
+    <include file="$(find rudpt_evaluation)/launch/orb_slam3/$(arg setup_file)">
+        <arg name="rviz_on" value="false" />
+        <arg name="enable_pangolin" value="false" />
+        <arg name="trajectory_server_on" value="true" />
+    </include>
+  
+    <!-- Initialise node for saving the svo poses -->
+    <node name="orb_slam3_to_txt" pkg="rudpt_evaluation" type="orb_slam3_pose_to_txt.py" output="screen" clear_params="true">
+       <param name="pose_topic" value="$(arg pose_topic)" type="str" /> 
+       <param name="output_file" value="$(arg output_file)" type="str" />
+    </node>
+
+</launch>
