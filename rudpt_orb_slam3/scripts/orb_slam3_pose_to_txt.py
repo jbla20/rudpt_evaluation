@@ -1,5 +1,6 @@
 import rospy
 from geometry_msgs.msg import PoseStamped
+import numpy as np
 
 def topic_to_txt(pose_topic, output_file):
     
@@ -14,7 +15,7 @@ def topic_to_txt(pose_topic, output_file):
         txt_file.write("# timestamp tx ty tz qx qy qz qw\n")
         
         def callback_pose(data : PoseStamped):
-            x = data.pose.pose.position.x
+            x = data.pose.position.x
             y = data.pose.position.y
             z = data.pose.position.z
             qx = data.pose.orientation.x
@@ -22,6 +23,10 @@ def topic_to_txt(pose_topic, output_file):
             qz = data.pose.orientation.z
             qw = data.pose.orientation.w
             timestamp = data.header.stamp.to_time()
+            
+            if np.isclose(np.array([x,y,z]), 0).all():
+                rospy.logwarn("Received zero pose, skipping")
+                return
             
             txt_file.write(f"{timestamp} {x} {y} {z} {qx} {qy} {qz} {qw}\n")
 
