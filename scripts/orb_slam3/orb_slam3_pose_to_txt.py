@@ -14,6 +14,7 @@ def topic_to_txt(pose_topic, output_file):
 
         txt_file.write("# timestamp tx ty tz qx qy qz qw\n")
         
+        prev_position = np.zeros(3)
         def callback_pose(data : PoseStamped):
             x = data.pose.position.x
             y = data.pose.position.y
@@ -30,6 +31,8 @@ def topic_to_txt(pose_topic, output_file):
             
             txt_file.write(f"{timestamp} {x} {y} {z} {qx} {qy} {qz} {qw}\n")
 
+            nonlocal prev_position
+            prev_position = np.array([x,y,z])
             nonlocal msgs_recv
             msgs_recv += 1
             

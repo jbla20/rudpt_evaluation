@@ -30,6 +30,7 @@ workspace_directory="$(catkin locate --src)/.."
 input_directory="${1:-"$workspace_directory/test/rudpt"}"
 output_directory="${2:-"$package_directory/results"}"
 algorithm_name="${3:-"svo"}"
+echo "Output directory: $output_directory"
 
 # Validate if directory exists
 if [ ! -d "$input_directory" ] || [ ! -d "$output_directory" ]; then
@@ -51,7 +52,8 @@ for bag_file in "$input_directory"/*; do
     # Run ROS launch file in a separate terminal and capture PID
     echo "Launching $algorithm_name environment in Rviz"
     output_file="$output_directory/$(basename "$bag_file" .bag)/stamped_traj_estimate.txt"
-    
+    echo "Output file: $output_file"
+
     # Create the parent directory if it doesn't exist
     if [ ! -d "$(dirname "$output_file")" ]; then
         echo "Creating directory $(dirname "$output_file")"
@@ -68,7 +70,7 @@ for bag_file in "$input_directory"/*; do
     
     # Run ROS bag play in a separate terminal and capture PID
     echo "Playing ros bag file"
-    screen -d -m -S rosbag_session bash -c "rosbag play \"$bag_file\"" # Can add "-s 100" for debug
+    screen -d -m -S rosbag_session bash -c "rosbag play \"$bag_file\" -u 40" # Can add "-s START_TIME" or "-u DURATION" for debug
     rosbag_pid=$(screen -ls | grep rosbag_session | awk '{print $1}' | cut -d. -f1)
     # echo "PID of rosbag_pid is $rosbag_pid"
     rosbag_duration=$(rosbag info --yaml --key=duration $bag_file)
@@ -78,14 +80,14 @@ for bag_file in "$input_directory"/*; do
     while is_process_running $rosbag_pid; do        
         if ! is_process_running $roslaunch_pid; then
             echo "Error: roslaunch process has stopped unexpectedly."
-            kill -INT $$
+            exit 1
         fi
         
         sleep 1
         time=$((time + 1))
         
         # Get number of lines in the log file
-        echo -ne "Ros bag playing: \"$time\"/\"$rosbag_duration\" seconds.\r"
+        echo -ne "Ros bag playing: "$time"/"$rosbag_duration" seconds.\r"
     done
 
     # Kill the process running in the screen session by sending a SIGTERM signal
@@ -97,5 +99,6 @@ for bag_file in "$input_directory"/*; do
     
     # Run the evaluation script
     echo "Evaluating the trajectory"
-    screen -d -m -S traj_evaluation bash -c "./compare_results.sh \"$(dirname "$output_file")\""
+    # screen -d -m -S traj_evaluation bash -c "./compare_results.sh \"$(dirname "$output_file")\""
+    "$package_directory/scripts/compare_results.sh" "$(dirname "$output_file")"
 done
