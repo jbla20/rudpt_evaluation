@@ -1,0 +1,18 @@
+<launch>
+    <!-- Parameters -->
+    <arg name="setup_file" default="vins_euroc_mono_imu.launch" />
+    <arg name="path_topic" default="/pose_graph/no_loop_path" />
+    <arg name="output_file" default="$(find rudpt_evaluation)/results/test.txt" />
+    
+    <!-- Setup the svo environment with the given setup file -->
+    <include file="$(find rudpt_evaluation)/launch/vins/$(arg setup_file)">
+        <arg name="rviz_on" value="false" />
+    </include>
+  
+    <!-- Initialise node for saving the svo poses -->
+    <node name="vins_to_txt" pkg="rudpt_evaluation" type="vins_path_to_txt.py" output="screen" clear_params="true">
+       <param name="path_topic" value="$(arg path_topic)" type="str" /> 
+       <param name="output_file" value="$(arg output_file)" type="str" />
+    </node>
+
+</launch>
