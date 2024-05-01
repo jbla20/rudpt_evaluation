@@ -8,8 +8,7 @@ def set_eval_times(result_folder : str,
                    traj_duration : float, 
                    start_time : float = 0, 
                    duration : Optional[float] = None):
-    print(result_folder, traj_duration, start_time, duration)
-    
+        
     eval_file = Path(result_folder + "/start_end_time.yaml")
     if not eval_file.is_file():
         print("Incorrect path to the result folder")
