@@ -70,7 +70,8 @@ for bag_file in "$input_directory"/*; do
     
     # Run ROS bag play in a separate terminal and capture PID
     echo "Playing ros bag file"
-    screen -d -m -S rosbag_session bash -c "rosbag play \"$bag_file\" -u 40" # Can add "-s START_TIME" or "-u DURATION" for debug
+    eval_duration=40.0
+    screen -d -m -S rosbag_session bash -c "rosbag play \"$bag_file\" -u \"$eval_duration\"" # Can add "-s START_TIME" or "-u DURATION" for debug
     rosbag_pid=$(screen -ls | grep rosbag_session | awk '{print $1}' | cut -d. -f1)
     # echo "PID of rosbag_pid is $rosbag_pid"
     rosbag_duration=$(rosbag info --yaml --key=duration $bag_file)
@@ -97,6 +98,12 @@ for bag_file in "$input_directory"/*; do
     # Sleep to allow time for terminals to close before proceeding to the next iteration
     sleep 2
     
+    # Set the start and end times based on the rosbag duration
+    python3 -c "import sys; sys.path.append('$package_directory/scripts');\
+                import set_eval_times; set_eval_times.set_eval_times(\
+                    result_folder='$(dirname "$output_file")', traj_duration=$rosbag_duration, start_time=0.0, duration=$eval_duration\
+                )"
+
     # Run the evaluation script
     echo "Evaluating the trajectory"
     # screen -d -m -S traj_evaluation bash -c "./compare_results.sh \"$(dirname "$output_file")\""
