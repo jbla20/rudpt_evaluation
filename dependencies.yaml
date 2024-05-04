@@ -1,0 +1,9 @@
+repositories:
+  catkin_simple:
+    type: git
+    url: git@github.com:catkin/catkin_simple.git
+    version: master
+  rpg_trajectory_evaluation:
+    type: git
+    url: git@github.com:jbla20/rpg_trajectory_evaluation.git
+    version: rudpt

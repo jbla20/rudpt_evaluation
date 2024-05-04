@@ -99,9 +99,12 @@ for bag_file in "$input_directory"/*; do
     sleep 2
     
     # Set the start and end times based on the rosbag duration
-    python3 -c "import sys; sys.path.append('$package_directory/scripts');\
+    python3 -c "import sys; sys.path.append('$package_directory/scripts/helpers');\
                 import set_eval_times; set_eval_times.set_eval_times(\
                     result_folder='$(dirname "$output_file")', traj_duration=$rosbag_duration, start_time=0.0, duration=$eval_duration\
+                );\
+                import fix_timestamp; fix_timestamp.fix_timestamp(\
+                    result_folder='$(dirname "$output_file")'
                 )"
 
     # Run the evaluation script
