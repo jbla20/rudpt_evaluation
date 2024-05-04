@@ -28,7 +28,7 @@ is_process_running() {
 package_directory="$(rospack find rudpt_evaluation)"
 workspace_directory="$(catkin locate --src)/.."
 input_directory="${1:-"$workspace_directory/test/rudpt"}"
-output_directory="${2:-"$package_directory/results"}"
+output_directory="${2:-"$package_directory/eval_data"}"
 algorithm_name="${3:-"svo"}"
 echo "Output directory: $output_directory"
 

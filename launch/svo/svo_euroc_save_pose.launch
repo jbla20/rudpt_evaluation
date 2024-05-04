@@ -2,7 +2,7 @@
     <!-- Parameters -->
     <arg name="setup_file" default="svo_euroc_mono_imu_frontend.launch" />
     <arg name="pose_topic" default="/svo/pose_imu" />
-    <arg name="output_file" default="$(find rudpt_evaluation)/results/test.txt" />
+    <arg name="output_file" default="$(find rudpt_evaluation)/eval_data/test.txt" />
     
     <!-- Setup the svo environment with the given setup file -->
     <include file="$(find rudpt_evaluation)/launch/svo/$(arg setup_file)">

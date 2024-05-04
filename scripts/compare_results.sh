@@ -3,7 +3,7 @@
 # Get the directory for the evaluation
 package_directory="$(catkin locate --this)"
 echo "Package directory: $package_directory"
-evaluation_directory="${1:-"$package_directory/results/test"}"
+evaluation_directory="${1:-"$package_directory/eval_data/test"}"
 
 # Validate if directory exists
 if [ ! -d "$evaluation_directory" ]; then

@@ -24,7 +24,7 @@ def set_eval_times(result_folder : str,
     
 
 if __name__ == "__main__":
-    set_eval_times("/home/v-slam/vins_ws/src/rudpt_evaluation/results/vins/1,1_0_0",
+    set_eval_times("/home/v-slam/vins_ws/src/rudpt_evaluation/eval_data/vins/1,1_0_0",
                    109.0,
                    0,
                    None)

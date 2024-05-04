@@ -29,4 +29,4 @@ def fix_timestamp(result_folder : str):
             df.to_csv(f, sep=" ", index=False, header=True)
 
 if __name__ == "__main__":
-    fix_timestamp("/home/v-slam/orbslam_ws/src/rudpt_evaluation/results/orb_slam3/MH_01_easy")
+    fix_timestamp("/home/v-slam/orbslam_ws/src/rudpt_evaluation/eval_data/orb_slam3/MH_01_easy")
