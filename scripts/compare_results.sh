@@ -2,8 +2,14 @@
 
 # Get the directory for the evaluation
 package_directory="$(catkin locate --this)"
-echo "Package directory: $package_directory"
 evaluation_directory="${1:-"$package_directory/eval_data/test"}"
+if [ -n "$2" ] && [ -d "$(dirname "$2")" ]; then
+    save_directory="$2"
+    if [ ! -d "$save_directory" ]; then
+        mkdir -p "$save_directory"
+    fi
+    echo "Save directory: $save_directory"
+fi
 
 # Validate if directory exists
 if [ ! -d "$evaluation_directory" ]; then
@@ -26,3 +32,12 @@ rosrun rpg_trajectory_evaluation analyze_trajectory_single.py "$evaluation_direc
 
 # Restore the PYTHONPATH
 export PYTHONPATH="$OLD_PYTHONPATH"
+
+# Save the results if a save directory is provided
+if [ -n "$save_directory" ]; then
+    echo "Saving results to directory: $save_directory"
+    cp -r "$evaluation_directory" "$save_directory"
+    # Rename the directory to include the date and time
+    mv "$save_directory/$(basename "$evaluation_directory")"\
+       "$save_directory/$(basename "$evaluation_directory")_$(date +"%Y-%m-%d_%H-%M-%S")"
+fi
