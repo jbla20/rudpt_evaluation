@@ -32,7 +32,7 @@ output_directory="${2:-"$package_directory/eval_data"}"
 algorithm_name="${3:-"svo"}"
 echo "Output directory: $output_directory"
 if [ -n "$4" ]; then 
-    save_directory="$4"
+    save_directory="$4"-$(date +"%Y-%m-%d_%H-%M-%S")
     echo "Save directory: $save_directory"
 fi
 
@@ -118,4 +118,10 @@ for bag_file in "$input_directory"/*; do
     else
         "$package_directory/scripts/compare_results.sh" "$(dirname "$output_file")"
     fi
+
 done
+
+# Compare boxplots between the different tests
+if [ -n "$save_directory" ]; then
+    rosrun rpg_trajectory_evaluation boxplot_comparison.py "$save_directory"
+fi
