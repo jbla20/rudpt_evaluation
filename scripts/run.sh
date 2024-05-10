@@ -111,12 +111,15 @@ for bag_file in "$input_directory"/*; do
                     result_folder='$(dirname "$output_file")'
                 )"
 
-    # Run the evaluation script
-    echo "Evaluating the trajectory"
-    if [ -n "$save_directory" ]; then
-        "$package_directory/scripts/compare_results.sh" "$(dirname "$output_file")" "$save_directory"
-    else
-        "$package_directory/scripts/compare_results.sh" "$(dirname "$output_file")"
+    # Run the evaluation script if there is any obtained trajectory data
+    line_count=$(wc -l < "$output_file")
+    if [ "$line_count" -gt 10 ]; then
+        echo "Evaluating the trajectory"
+        if [ -n "$save_directory" ]; then
+            "$package_directory/scripts/compare_results.sh" "$(dirname "$output_file")" "$save_directory"
+        else
+            "$package_directory/scripts/compare_results.sh" "$(dirname "$output_file")"
+        fi
     fi
 
 done
