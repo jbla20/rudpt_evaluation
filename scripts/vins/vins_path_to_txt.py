@@ -1,5 +1,4 @@
 import rospy
-from geometry_msgs.msg import PoseWithCovarianceStamped
 from nav_msgs.msg import Path
 
 def topic_to_txt(path_topic, output_file):
