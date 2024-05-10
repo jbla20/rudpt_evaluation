@@ -102,18 +102,19 @@ for bag_file in "$input_directory"/*; do
     # Sleep to allow time for terminals to close before proceeding to the next iteration
     sleep 2
     
-    # Set the start and end times based on the rosbag duration
-    python3 -c "import sys; sys.path.append('$package_directory/scripts/helpers');\
-                import set_eval_times; set_eval_times.set_eval_times(\
-                    result_folder='$(dirname "$output_file")', traj_duration=$rosbag_duration, start_time=0.0, duration=$eval_duration\
-                );\
-                import fix_timestamp; fix_timestamp.fix_timestamp(\
-                    result_folder='$(dirname "$output_file")'
-                )"
-
     # Run the evaluation script if there is any obtained trajectory data
     line_count=$(wc -l < "$output_file")
     if [ "$line_count" -gt 10 ]; then
+        # Set the start and end times based on the rosbag duration
+        python3 -c "import sys; sys.path.append('$package_directory/scripts/helpers');\
+                    import set_eval_times; set_eval_times.set_eval_times(\
+                        result_folder='$(dirname "$output_file")', traj_duration=$rosbag_duration, start_time=0.0, duration=$eval_duration\
+                    );\
+                    import fix_timestamp; fix_timestamp.fix_timestamp(\
+                        result_folder='$(dirname "$output_file")'
+                    )"
+
+        # Compare the trajectory with the groundtruth using rpg_trajectory_evaluation
         echo "Evaluating the trajectory"
         if [ -n "$save_directory" ]; then
             "$package_directory/scripts/compare_results.sh" "$(dirname "$output_file")" "$save_directory"
