@@ -4,19 +4,20 @@ import yaml
 from pathlib import Path
 from typing import Optional
 
-def set_eval_times(result_folder : str, 
+def set_eval_times(eval_folder : str, 
                    traj_duration : float, 
                    start_time : float = 0, 
                    duration : Optional[float] = None):
         
-    eval_file = Path(result_folder + "/start_end_time.yaml")
+    eval_file = Path(eval_folder + "/start_end_time.yaml")
     if not eval_file.is_file():
         print("Incorrect path to the result folder")
         return
 
+    print("Setting evaluation times for the result folder: ", eval_folder)
     eval_times_dict = {}
     eval_times_dict["start_time_sec"] = start_time
-    if duration and start_time + duration < traj_duration:
+    if duration and duration < traj_duration:
         eval_times_dict["end_time_sec"] = start_time + duration
     
     with open(eval_file, "w") as file:

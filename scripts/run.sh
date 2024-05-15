@@ -45,7 +45,7 @@ fi
 # Loop through each file in the directory
 for bag_file in "$input_directory"/*; do
     # Check if it's a file
-    if [ ! -f "$bag_file" ]; then
+    if [ ! -f "$bag_file" ] || [[ ! "$bag_file" =~ \.bag$ ]]; then
         continue
     fi
 
@@ -79,6 +79,7 @@ for bag_file in "$input_directory"/*; do
     rosbag_pid=$(screen -ls | grep rosbag_session | awk '{print $1}' | cut -d. -f1)
     # echo "PID of rosbag_pid is $rosbag_pid"
     rosbag_duration=$(rosbag info --yaml --key=duration $bag_file)
+    rosbag_start=$(rosbag info --yaml --key=start $bag_file)
     
     # Check if the rosbag play process has finished
     time=0
@@ -108,11 +109,8 @@ for bag_file in "$input_directory"/*; do
         # Set the start and end times based on the rosbag duration
         python3 -c "import sys; sys.path.append('$package_directory/scripts/helpers');\
                     import set_eval_times; set_eval_times.set_eval_times(\
-                        result_folder='$(dirname "$output_file")', traj_duration=$rosbag_duration, start_time=0.0, duration=$eval_duration\
-                    );\
-                    import fix_timestamp; fix_timestamp.fix_timestamp(\
-                        result_folder='$(dirname "$output_file")'
-                    )"
+                        eval_folder='$(dirname "$output_file")', traj_duration=$rosbag_duration, start_time=$rosbag_start, duration=$eval_duration\
+                    );"
 
         # Compare the trajectory with the groundtruth using rpg_trajectory_evaluation
         echo "Evaluating the trajectory"

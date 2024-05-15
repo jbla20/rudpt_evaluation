@@ -3,14 +3,14 @@
 from pathlib import Path
 import pandas as pd
 
-def fix_timestamp(result_folder : str):
-    
-    groundtruth_file = Path(result_folder + "/stamped_groundtruth.txt")
-    estimate_file = Path(result_folder + "/stamped_traj_estimate.txt")
+def fix_timestamp(eval_folder : str):
+    groundtruth_file = Path(eval_folder + "/stamped_groundtruth.txt")
+    estimate_file = Path(eval_folder + "/stamped_traj_estimate.txt")
     if not groundtruth_file.is_file or not estimate_file.is_file:
         print("Incorrect structure of the result folder")
         return
     
+    print("Fixing timestamps for the result folder: ", eval_folder)
     initial_timestamp = None
     for file in [groundtruth_file, estimate_file]:        
         # Read the file into a DataFrame
