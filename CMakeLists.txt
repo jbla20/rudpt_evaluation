@@ -19,10 +19,8 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
-  scripts/svo/svo_pose_to_txt.py
-  scripts/orb_slam3/orb_slam3_pose_to_txt.py
-  scripts/vins/vins_path_to_txt.py
   scripts/helpers/set_eval_times.py
   scripts/helpers/fix_timestamp.py
+  scripts/helpers/path_writer_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
