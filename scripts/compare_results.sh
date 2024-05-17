@@ -27,8 +27,11 @@ if [ -d "$evaluation_directory/plots" ]; then rm -rf "$evaluation_directory/plot
 if [ -d "$evaluation_directory/saved_results" ]; then rm -rf "$evaluation_directory/saved_results"; fi
 
 # Run the evaluation script
-echo "Running evaluation script for directory: $evaluation_directory"
-rosrun rpg_trajectory_evaluation analyze_trajectory_single.py "$evaluation_directory"
+line_count=$(wc -l < "$evaluation_directory/stamped_traj_estimate.txt")
+if [ "$line_count" -gt 10 ]; then
+    echo "Running evaluation script for directory: $evaluation_directory"
+    rosrun rpg_trajectory_evaluation analyze_trajectory_single.py "$evaluation_directory"
+fi
 
 # Restore the PYTHONPATH
 export PYTHONPATH="$OLD_PYTHONPATH"
