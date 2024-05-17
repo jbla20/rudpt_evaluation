@@ -38,22 +38,23 @@ def topic_to_txt(pose_topic, msg_type, output_file):
         # spin() simply keeps python from exiting until this node is stopped
         rospy.spin()
 
+
 def get_pose_and_header(data : Union[PoseWithCovarianceStamped, PoseStamped, Path, Odometry], 
-                        msg_type : str):
+                        msg_type):
     # Extract the pose and header from the message
-    if isinstance(msg_type, PoseWithCovarianceStamped):
+    if msg_type == PoseWithCovarianceStamped:
         return {"pose": data.pose.pose,
                 "header": data.header}
-        
-    elif isinstance(msg_type, PoseStamped):
+    
+    elif msg_type == PoseStamped:
         return {"pose": data.pose,
                 "header": data.header}
-            
-    elif isinstance(msg_type, Path):
+    
+    elif msg_type == Path:
         return {"pose": data.poses[-1].pose,
                 "header": data.poses[-1].header}
-        
-    elif isinstance(msg_type, Odometry):
+    
+    elif msg_type == Odometry:
         return {"pose": data.pose.pose,
                 "header": data.header}
 
