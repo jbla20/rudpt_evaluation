@@ -122,4 +122,5 @@ done
 # Compare boxplots between the different tests
 if [ -n "$save_directory" ]; then
     rosrun rpg_trajectory_evaluation boxplot_comparison.py "$save_directory"
+    rosrun rpg_trajectory_evaluation boxplot_comparison_individual.py "$save_directory" "--alg_type=$algorithm_name"
 fi
