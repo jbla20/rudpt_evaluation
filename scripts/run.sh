@@ -76,7 +76,8 @@ for bag_file in "$input_directory"/*; do
     # Run ROS bag play in a separate terminal and capture PID
     echo "Playing ros bag file"
     eval_duration=100.0
-    screen -d -m -S rosbag_session bash -c "rosbag play \"$bag_file\" -u \"$eval_duration\"" # Can add "-s START_TIME" or "-u DURATION" for debug
+    playback_factor=1
+    screen -d -m -S rosbag_session bash -c "rosbag play \"$bag_file\" -r \"$playback_factor\" -u \"$eval_duration\"" # Can add "-s START_TIME" or "-u DURATION" for debug
     rosbag_pid=$(screen -ls | grep rosbag_session | awk '{print $1}' | cut -d. -f1)
     # echo "PID of rosbag_pid is $rosbag_pid"
     rosbag_duration=$(rosbag info --yaml --key=duration $bag_file)
@@ -91,7 +92,7 @@ for bag_file in "$input_directory"/*; do
         fi
         
         sleep 1
-        time=$((time + 1))
+        time=$((time + playback_factor))
         
         # Get number of lines in the log file
         echo -ne "Ros bag playing: "$time"/"$rosbag_duration" seconds.\r"
