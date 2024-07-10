@@ -34,6 +34,7 @@ echo "Output directory: $output_directory"
 if [ -n "$4" ]; then 
     save_directory="$4"-$(date +"%Y-%m-%d_%H-%M-%S")
     echo "Save directory: $save_directory"
+    comment="${5:-""}"
 fi
 
 # Validate if directory exists
@@ -123,4 +124,5 @@ done
 if [ -n "$save_directory" ]; then
     rosrun rpg_trajectory_evaluation boxplot_comparison.py "$save_directory"
     rosrun rpg_trajectory_evaluation boxplot_comparison_individual.py "$save_directory" "--alg_type=$algorithm_name"
+    echo "$comment" > "$save_directory/comment.txt"
 fi
