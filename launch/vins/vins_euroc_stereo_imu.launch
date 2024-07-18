@@ -1,0 +1,14 @@
+<launch>
+    <arg name="config_path" default = "$(find rudpt_evaluation)/param/vins/euroc_stereo_imu_RUD-PT.yaml" /> 
+    <arg name="rviz_on" default="false" />
+
+    <node if="$(arg rviz_on)" name="rviz" pkg="rviz" type="rviz" args="-d $(find vins)/../config/vins_rviz_config.rviz" output="screen" />
+
+    <node name="vins_estimator" pkg="vins" type="vins_node" args="$(arg config_path)" output="screen" />
+
+    <!-- <node name="loop_fusion" pkg="loop_fusion" type="loop_fusion_node" output="screen">
+       <param name="config_file" type="string" value="$(arg config_path)" />
+       <param name="vins_folder" type="string" value="$(arg vins_path)" />
+    </node> -->
+
+</launch>

@@ -1,17 +1,17 @@
 <launch>
     <!-- Parameters -->
     <arg name="setup_file"  default="vins_euroc_mono_imu.launch" />
-    <arg name="pose_topic"  default="/pose_graph/no_loop_path" />
+    <arg name="pose_topic"  default="/pose_graph/no_loop_path" />  <!-- Mono: "", Stereo: "/vins_estimator/path" -->
     <arg name="msg_type"     default="Path" />
     <arg name="output_file" default="$(find rudpt_evaluation)/eval_data/test.txt" />
     
-    <!-- Setup the svo environment with the given setup file -->
+    <!-- Setup the vins environment with the given setup file -->
     <include file="$(find rudpt_evaluation)/launch/vins/$(arg setup_file)">
         <arg name="rviz_on" value="false" />
     </include>
     <!-- <include file="$(find vins_estimator)/launch/euroc.launch" /> -->
     
-    <!-- Initialise node for saving the svo poses -->
+    <!-- Initialise node for saving the vins poses -->
     <node name="path_writer_node" pkg="rudpt_evaluation" type="path_writer_node.py" output="screen" clear_params="true">
         <param name="pose_topic" value="$(arg pose_topic)" type="str" /> 
          <param name="msg_type" value="$(arg msg_type)" type="str" />
