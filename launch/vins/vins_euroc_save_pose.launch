@@ -1,7 +1,7 @@
 <launch>
     <!-- Parameters -->
     <arg name="setup_file"  default="vins_euroc_mono_imu.launch" />
-    <arg name="pose_topic"  default="/pose_graph/no_loop_path" />  <!-- Mono: "", Stereo: "/vins_estimator/path" -->
+    <arg name="pose_topic"  default="/pose_graph/no_loop_path" />  <!-- Mono: "/pose_graph/no_loop_path", Stereo: "/vins_estimator/path" -->
     <arg name="msg_type"     default="Path" />
     <arg name="output_file" default="$(find rudpt_evaluation)/eval_data/test.txt" />
     
