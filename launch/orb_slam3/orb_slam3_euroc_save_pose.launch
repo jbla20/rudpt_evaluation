@@ -1,7 +1,7 @@
 <launch>
     <!-- Parameters -->
     <arg name="setup_file"  default="orb_slam3_euroc_mono.launch" />
-    <arg name="pose_topic"  default="/orb_slam3/camera_pose" />
+    <arg name="pose_topic"  default="/orb_slam3/camera_pose" /> <!-- No Imu: /orb_slam3/camera_pose, Imu: /orb_slam3/body_odom -->
     <arg name="msg_type"    default="PoseStamped" /> <!-- No Imu: PoseStamped, Imu: Odometry -->
     <arg name="output_file" default="$(find rudpt_evaluation)/eval_data/test/stamped_traj_estimate.txt" />
     
