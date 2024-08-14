@@ -125,6 +125,6 @@ done
 if [ -n "$save_directory" ]; then
     echo "$comment" > "$save_directory/comment.txt"
     rosrun rpg_trajectory_evaluation boxplot_comparison.py "$save_directory"
-    rosrun rpg_trajectory_evaluation boxplot_comparison_individual.py "$save_directory" "--alg_type=$algorithm_name"
+    rosrun rpg_trajectory_evaluation boxplot_comparison_individual_algs.py "$save_directory" "--alg_type=$algorithm_name"
     rosrun rpg_trajectory_evaluation table_comparison.py "$save_directory"
 fi
