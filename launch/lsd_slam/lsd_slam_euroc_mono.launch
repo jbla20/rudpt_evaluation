@@ -1,0 +1,10 @@
+<launch>
+    <arg name="calib_path" default="$(find rudpt_evaluation)/param/pinhole_euroc_calib.cfg" />
+    
+    <node name="live_slam" pkg="lsd_slam_core" type="live_slam" output="screen">
+        <remap from="/image" to="/cam0/image_raw"/>
+
+        <param name="hz" type="double" value="20.0" />
+        <param name="calib" type="string" value="$(arg calib_path)" />
+    </node>
+</launch>
