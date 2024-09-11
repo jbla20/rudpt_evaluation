@@ -1,0 +1,21 @@
+<launch>
+    <!-- Parameters -->
+    <arg name="setup_file"  default="okvis_euroc_stereo_imu.launch" />
+    <arg name="pose_topic"  default="/okvis_node/okvis_path" /> 
+    <arg name="msg_type"     default="Path" />
+    <arg name="output_file" default="$(find rudpt_evaluation)/eval_data/test.txt" />
+    
+    <!-- Setup the okvis environment with the given setup file -->
+    <!-- <include file="$(find rudpt_evaluation)/launch/okvis/$(arg setup_file)">
+        <arg name="rviz_on" value="false" />
+    </include> -->
+    <include file="$(find okvis_ros)/launch/okvis_node.launch" />
+    
+    <!-- Initialise node for saving the okvis poses -->
+    <node name="path_writer_node" pkg="rudpt_evaluation" type="path_writer_node.py" output="screen" clear_params="true">
+        <param name="pose_topic" value="$(arg pose_topic)" type="str" /> 
+        <param name="msg_type" value="$(arg msg_type)" type="str" />
+        <param name="output_file" value="$(arg output_file)" type="str" />
+    </node>
+
+</launch>
