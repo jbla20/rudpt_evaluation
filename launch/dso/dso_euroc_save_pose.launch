@@ -1,0 +1,20 @@
+<launch>
+    <!-- Parameters -->
+    <arg name="setup_file"  default="dso_euroc_mono.launch" />
+    <arg name="pose_topic"  default="/dso_odom" />
+    <arg name="msg_type"     default="Odometry" />
+    <arg name="output_file" default="$(find rudpt_evaluation)/eval_data/test.txt" />
+    
+    <!-- Setup the dso environment with the given setup file -->
+    <include file="$(find rudpt_evaluation)/launch/dso/$(arg setup_file)" />
+    <!-- <include file="$(find dso_ros)/launch/aqualoc_archeo.launch" /> -->
+    
+    <!-- Initialise node for saving the lsd_slam poses -->
+    <node name="path_writer_node" pkg="rudpt_evaluation" type="path_writer_node.py" output="screen" clear_params="true">
+        <param name="pose_topic" value="$(arg pose_topic)" type="str" /> 
+        <param name="msg_type" value="$(arg msg_type)" type="str" />
+        <param name="output_file" value="$(arg output_file)" type="str" />
+    </node>
+
+</launch>
+

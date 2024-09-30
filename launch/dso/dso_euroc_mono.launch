@@ -1,0 +1,9 @@
+<launch>
+    <arg name="calib" default="$(find rudpt_evaluation)/param/dso/pinhole_euroc_calib_RUD-PT.cfg" />
+
+    <!-- Main node -->
+    <node name="dso_live" pkg="dso_ros" type="dso_live" output="screen" args="nogui=1 calib='$(arg calib)'">
+        <!-- change the topics according to the dataset -->
+        <remap from="/image" to="/cam0/image_raw"/>
+    </node>
+</launch>
