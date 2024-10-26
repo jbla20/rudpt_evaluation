@@ -1,0 +1,14 @@
+<launch>
+    <arg name="config_path"  default="$(find rudpt_evaluation)/param/open_vins/euroc_mono_inertial.yaml" />
+
+    <include file="$(find rudpt_evaluation)/launch/open_vins/$(arg setup_file)">
+        <!-- master configuration object -->
+        <param name="verbosity"              type="string" value="SILENT" />
+        <param name="config_path"            type="string" value="$(arg config_path)" />
+
+        <!-- world/filter parameters -->
+        <param name="use_stereo"             type="bool"   value="false" />
+        <param name="max_cameras"            type="int"    value="1" />
+    </include>
+
+</launch>

@@ -1,0 +1,24 @@
+<launch>
+    <!-- Parameters -->
+    <arg name="setup_file"  default="open_vins_euroc_mono_inertial.launch" />
+    <arg name="pose_topic"  default="/ov_msckf/poseimu" />
+    <arg name="msg_type"    default="PoseWithCovarianceStamped" />
+    <arg name="output_file" default="$(find rudpt_evaluation)/eval_data/test/stamped_traj_estimate.txt" />
+    
+    <!-- Setup the open_vins environment with the given setup file -->
+    <!-- <include file="$(find rudpt_evaluation)/launch/open_vins/$(arg setup_file)">
+    </include> -->
+    <include file="$(find ov_msckf)/launch/subscribe.launch">
+        <arg name="config" value="aqualoc_archeo" />
+        <arg name="max_cameras" default="1" />
+        <arg name="use_stereo"  default="false" />
+    </include>
+  
+    <!-- Initialise node for saving the open_vins poses -->
+    <node name="path_writer_node" pkg="rudpt_evaluation" type="path_writer_node.py" output="screen" clear_params="true">
+        <param name="pose_topic" value="$(arg pose_topic)" type="str" /> 
+        <param name="msg_type" value="$(arg msg_type)" type="str" />
+        <param name="output_file" value="$(arg output_file)" type="str" />
+    </node>
+
+</launch>
