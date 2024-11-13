@@ -14,19 +14,11 @@ from pathlib import Path
 np.float = np.float64
 np.int = np.int64
 
+# Local imports
+import helpers.rudpt_helpers as rh
+
 # Type imports
 from typing import List, Dict, Tuple, Any
-
-# Constants
-TEST_MAP = {'1,1' : '1rect',
-            '1,2' : '1circ',
-            '1,3' : '1rand',
-            '2,1' : '2feat',
-            '2,2' : '2tilt'}
-CONDITION_MAP = {'t' :
-                    {'0': '0ml', '1': '50ml', '2': '100ml'},
-                'ms' :
-                    {'0': '0.0g', '1': '1.5g', '2': '3.0g', '3': '4.5g'}}
 
 
 def calculate_delentropy(image : np.ndarray, gamma : float = 1.0) -> Dict[str, Any]:
@@ -106,40 +98,6 @@ def delentropy_of_bag(bag_file : str, image_topic : str, downsample_factor : flo
 
     return np.array(del_entropies), np.array(del_densities)
 
-def num_to_levels(traj_num_identifier : str) -> Tuple[str, str]:
-    # Determine trajectory type
-    if not traj_num_identifier[:3] in ['1,1', '1,2', '1,3', '2,1', '2,2']:
-        raise ValueError("Invalid trajectory type: " + traj_num_identifier[:3])
-
-    # Determine turbidity
-    if not traj_num_identifier[4] in ['0', '1', '2']:
-        raise ValueError("Invalid turbidity level: " + traj_num_identifier[4])
-    turbidity = int(traj_num_identifier[4])
-
-    # Determine marine snow
-    if not traj_num_identifier[6] in ['0', '1', '2', '3']:
-        raise ValueError("Invalid marine snow level: " + traj_num_identifier[6])
-    marine_snow = int(traj_num_identifier[6])
-
-    return (turbidity, marine_snow)
-
-def num_to_name(traj_num_identifier : str) -> str:
-    # Determine trajectory type
-    if not traj_num_identifier[:3] in ['1,1', '1,2', '1,3', '2,1', '2,2']:
-        raise ValueError("Invalid trajectory type: " + traj_num_identifier[:3])
-    traj_type = TEST_MAP[traj_num_identifier[:3]]
-
-    # Determine turbidity
-    if not traj_num_identifier[4] in ['0', '1', '2']:
-        raise ValueError("Invalid turbidity level: " + traj_num_identifier[4])
-    turbidity = f"t={CONDITION_MAP['t'][traj_num_identifier[4]]}"
-
-    # Determine marine snow
-    if not traj_num_identifier[6] in ['0', '1', '2', '3']:
-        raise ValueError("Invalid marine snow level: " + traj_num_identifier[6])
-    marine_snow = f"ms={CONDITION_MAP['ms'][traj_num_identifier[6]]}"
-
-    return f"{traj_type}_{turbidity}_{marine_snow}"
 
 if __name__ == "__main__":
     # High delentropy: Gradient values are uniformly distributed, indicating high randomness and little structure.
@@ -200,17 +158,17 @@ if __name__ == "__main__":
 
         if args.rudpt:
             fig = plt.figure(figsize = (9,12))
-            fig.suptitle(f"Delentropy of RUD-PT {num_to_name(Path(files[0]).stem).split('_', 1)[0]}", fontsize=16)
+            fig.suptitle(f"Delentropy of RUD-PT {rh.num_to_name(Path(files[0]).stem).split('_', 1)[0]}", fontsize=16)
 
             if len(files) != 12: raise ValueError("Folder is not in correct RUD-PT format.")
             axes = [None] * 12
             max_delentropy = 0
             for file in files:
-                turbidity_level, marine_snow_level = num_to_levels(Path(file).stem)
+                turbidity_level, marine_snow_level = rh.num_to_levels(Path(file).stem)
                 i = turbidity_level * 4 + marine_snow_level
 
                 del_entropies, _ = delentropy_of_bag(file, args.image_topic, downsample_factor, gamma)
-                axes[i] = fig.add_subplot(3, 4, i+1, title = num_to_name(Path(file).stem).split('_', 1)[1])
+                axes[i] = fig.add_subplot(3, 4, i+1, title = rh.num_to_name(Path(file).stem).split('_', 1)[1])
                 sns.violinplot(x=np.full(del_entropies.shape[0], Path(file).stem), y=del_entropies, ax=axes[i])
 
                 max_delentropy = np.max([max_delentropy, np.max(del_entropies)])
